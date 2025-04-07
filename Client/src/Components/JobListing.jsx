@@ -13,7 +13,7 @@ const JobListing = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedLocations, setSelectedLocations] = useState([]);
 
-  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState(null);
 
   const handleCategoryChange = (category) => {
     setSelectedCategories(
