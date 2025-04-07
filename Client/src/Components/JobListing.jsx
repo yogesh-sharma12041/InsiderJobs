@@ -13,39 +13,56 @@ const JobListing = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedLocations, setSelectedLocations] = useState([]);
 
-  const [filteredJobs, setFilteredJobs] = useState(null);
+  const [filteredJobs, setFilteredJobs] = useState(jobs);
 
   const handleCategoryChange = (category) => {
-    setSelectedCategories(
-        prev => prev.includes(category) ? prev.filter( c => c!== category) : [...prev, category]
-    )
-  }
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
 
   const handleLocationChange = (location) => {
-    setSelectedLocations(
-        prev => prev.includes(location) ? prev.filter( c => c!== location) : [...prev, location]
-    )
-  }
+    setSelectedLocations((prev) =>
+      prev.includes(location)
+        ? prev.filter((c) => c !== location)
+        : [...prev, location]
+    );
+  };
 
   useEffect(() => {
+    const matchesCategory = (job) =>
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(job.category);
 
-    const matchesCategory = (job) => selectedCategories.length === 0 || selectedCategories.includes(job.category)
+    const matchesLocation = (job) =>
+      selectedLocations.length === 0 ||
+      selectedLocations.includes(job.location);
 
-    const matchesLocation = (job) => selectedLocations.length === 0 || selectedLocations.includes(job.location)
+    const matchesTitle = (job) =>
+      searchFilter.title === "" ||
+      job.title.toLowerCase().includes(searchFilter.title.toLowerCase());
 
-    const matchesTitle = (job) => searchFilter.title === "" || job.title.toLowerCase().includes(searchFilter.title.toLowerCase())
+    const matchesSearchLocation = (job) =>
+      searchFilter.location === "" ||
+      job.location.toLowerCase().includes(searchFilter.location.toLowerCase());
 
-    const matchesSearchLocation = (job) => searchFilter.location === "" || job.location.toLowerCase().includes(searchFilter.location.toLowerCase())
-
-    const newFilteredJobs = jobs.slice().reverse().filter(
-        job => matchesCategory(job) && matchesLocation(job) && matchesTitle(job) && matchesSearchLocation(job)
-    )
+    const newFilteredJobs = jobs
+      .slice()
+      .reverse()
+      .filter(
+        (job) =>
+          matchesCategory(job) &&
+          matchesLocation(job) &&
+          matchesTitle(job) &&
+          matchesSearchLocation(job)
+      );
 
     setFilteredJobs(newFilteredJobs);
 
     setCurrentPage(1);
-
-  }, [jobs, selectedCategories, selectedLocations, searchFilter])
+  }, [jobs, selectedCategories, selectedLocations, searchFilter]);
 
   return (
     <div className="container 2xl:px-20 mx-auto flex flex-col lg:flex-row max-lg:space-y-8 py-8">
@@ -65,7 +82,7 @@ const JobListing = () => {
                       onClick={(e) =>
                         setSearchFilter((prev) => ({
                           ...prev,
-                          title: ""
+                          title: "",
                         }))
                       }
                       className="cursor-pointer"
@@ -99,14 +116,19 @@ const JobListing = () => {
         </button>
 
         {/* Category Filter */}
-
         <div className={showFilter ? "" : "max-lg:hidden"}>
           <h4 className="font-medium text-lg py-4">Search by Categories</h4>
           <ul className="space-y-4 text-gray-600">
             {JobCategories.map((category, index) => (
               <li className="flex gap-3 items-center" key={index}>
-                <input className="scale-125" type="checkbox" name="" id="" onChange={() => handleCategoryChange(category)}
-                checked = {selectedCategories.includes(category)}/>
+                <input
+                  className="scale-125"
+                  type="checkbox"
+                  name=""
+                  id=""
+                  onChange={() => handleCategoryChange(category)}
+                  checked={selectedCategories.includes(category)}
+                />
                 {category}
               </li>
             ))}
@@ -121,9 +143,13 @@ const JobListing = () => {
           <ul className="space-y-4 text-gray-600">
             {JobLocations.map((location, index) => (
               <li className="flex gap-3 items-center" key={index}>
-                <input className="scale-125" type="checkbox" name="" id="" 
-                onChange={() => handleLocationChange(location)}
-                checked = {selectedLocations.includes(location)}
+                <input
+                  className="scale-125"
+                  type="checkbox"
+                  name=""
+                  id=""
+                  onChange={() => handleLocationChange(location)}
+                  checked={selectedLocations.includes(location)}
                 />
                 {location}
               </li>
@@ -139,11 +165,15 @@ const JobListing = () => {
         </h3>
         <p className="mb-8">Get yor desired jobs from top companies</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredJobs === null ?  <Loading /> : filteredJobs 
-            .slice((currentPage - 1) * 6, currentPage * 6)
-            .map((job, index) => (
-              <JobCard key={index} job={job} />
-            )) }
+          {!jobs || jobs.length === 0 || !filteredJobs ? (
+            <Loading />
+          ) : filteredJobs.length === 0 ? (
+            <p>No jobs found.</p>
+          ) : (
+            filteredJobs
+              .slice((currentPage - 1) * 6, currentPage * 6)
+              .map((job, index) => <JobCard key={index} job={job} />)
+          )}
         </div>
 
         {/* Pagination */}
@@ -176,7 +206,10 @@ const JobListing = () => {
               <img
                 onClick={(e) =>
                   setCurrentPage(
-                    Math.min(currentPage + 1, Math.ceil(filteredJobs.length / 6))
+                    Math.min(
+                      currentPage + 1,
+                      Math.ceil(filteredJobs.length / 6)
+                    )
                   )
                 }
                 src={assets.right_arrow_icon}
