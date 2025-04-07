@@ -166,7 +166,7 @@ const JobListing = () => {
         <p className="mb-8">Get yor desired jobs from top companies</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {!jobs || jobs.length === 0 || filteredJobs === null ? (
-            <div className="flex items-center justify-center w-full"><Loading /></div>
+            <div className="col-span-full flex justify-center items-center h-full"><Loading /></div>
           ) : filteredJobs.length === 0 ? (
             <p>No jobs found.</p>
           ) : (
