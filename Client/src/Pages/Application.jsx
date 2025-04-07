@@ -7,6 +7,7 @@ import { AppContext } from "../Context/AppContext";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Loading from '../Components/Loading'
 
 const Application = () => {
   const { user } = useUser();
@@ -15,8 +16,13 @@ const Application = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [resume, setResume] = useState(null);
 
-  const { backendUrl, userData, userApplications, fetchUserData, fetchUserApplications} =
-    useContext(AppContext);
+  const {
+    backendUrl,
+    userData,
+    userApplications,
+    fetchUserData,
+    fetchUserApplications,
+  } = useContext(AppContext);
 
   const updateResume = async () => {
     try {
@@ -46,10 +52,12 @@ const Application = () => {
   };
 
   useEffect(() => {
-    if(user) {
-      fetchUserApplications()
+    if (user) {
+      fetchUserApplications();
     }
-  }, [user])
+  }, [user]);
+
+  if (!userData) return <div><Loading /></div>;
 
   return (
     <>
@@ -81,12 +89,15 @@ const Application = () => {
             </>
           ) : (
             <div className="flex gap-2 max-sm:ml-2">
-              <a
-                className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg"
-                target="_" href={userData.resume}
-              >
-                Resume
-              </a>
+              {userData && userData.resume && (
+                <a
+                  className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg"
+                  target="_"
+                  href={userData.resume}
+                >
+                  Resume
+                </a>
+              )}
               <button
                 onClick={() => setIsEdit(true)}
                 className="text-gray-500 border border-gray-300 rounded-lg px-4 py-2"
