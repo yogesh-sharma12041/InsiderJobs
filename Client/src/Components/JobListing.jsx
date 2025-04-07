@@ -139,11 +139,11 @@ const JobListing = () => {
         </h3>
         <p className="mb-8">Get yor desired jobs from top companies</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredJobs ? filteredJobs 
+          {filteredJobs === null ?  <Loading /> : filteredJobs 
             .slice((currentPage - 1) * 6, currentPage * 6)
             .map((job, index) => (
               <JobCard key={index} job={job} />
-            )) : <Loading />}
+            )) }
         </div>
 
         {/* Pagination */}
