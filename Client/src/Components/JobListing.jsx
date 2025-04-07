@@ -165,7 +165,7 @@ const JobListing = () => {
         </h3>
         <p className="mb-8">Get yor desired jobs from top companies</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {!jobs || jobs.length === 0 || !filteredJobs ? (
+          {!jobs || jobs.length === 0 || filteredJobs === null ? (
             <Loading />
           ) : filteredJobs.length === 0 ? (
             <p>No jobs found.</p>
